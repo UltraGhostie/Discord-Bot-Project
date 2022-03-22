@@ -17,4 +17,4 @@ async def on_message(message):
         await message.channel.send('Hello!')
 
 # client = MyClient()
-client.run('MjIwMTMxNDEzNzEyODMwNDY1.V8VjWg.YcXebMFNi5RLx9yfkh3Q6Oix1fQ')
+client.run('Token')
