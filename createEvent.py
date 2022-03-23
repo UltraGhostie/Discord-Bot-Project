@@ -3,6 +3,7 @@ from __future__ import print_function
 import datetime
 from distutils import core
 import os.path
+from time import time
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -16,6 +17,8 @@ import os
 from apiclient import discovery
 from oauth2client import tools
 
+import sometimeahead
+
 try:
     import argparse
     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
@@ -25,8 +28,7 @@ except ImportError:
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
-
-def main():
+def createEvent(summary = 'Event', location = 'location', description = 'description', startTime = sometimeahead.main(), endTime = sometimeahead.main(2), attendees = 'null', reminders = '30'):
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
     """
@@ -51,32 +53,52 @@ def main():
     try:
         # Create a calendar event
         event = {
-            'summary': 'Test Event',
-            'location': 'Storbergsgatan 26, Stockholm',
-            'description': 'A chance to hear more about Google\'s developer products.',
+            'summary': summary,
+            'location': location,
+            'description': description,
             'start': {
-                'dateTime': '2022-03-22T22:00:00',
+                'dateTime': startTime,
                 'timeZone': 'Europe/Stockholm',
             },
             'end': {
-                'dateTime': '2022-03-22T22:01:00',
+                'dateTime': endTime,
                 'timeZone': 'Europe/Stockholm',
             },
-            'attendees': [
-                {'email': 'raul.bjorkman@gmail.com'},
-            ],
+            'attendees': [],
             'reminders': {
-                'useDefault': False,
-                'overrides': [
-                {'method': 'popup', 'minutes': 1},
-                ],
+                'useDefault': False
             },
         }
+        if attendees != 'null':
+            attendeearray = attendees.split(' ')
+            i = 0
+            for item in attendeearray:
+                attendeedict = {
+                    'email': attendeearray[i]
+                }
+                event['attendees'].append(attendeedict)
+                i = i + 1
+
+        if reminders != 'null':
+            overridearray = reminders.split(' ')
+            overridemetadict = {
+                'overrides': []
+            }
+            i = 0
+            for item in overridearray:
+                overridedict = {
+                    'method': 'popup',
+                    'minutes': overridearray[i]
+                }
+                overridemetadict['overrides'].append(overridedict)
+            event['reminders'].update(overridemetadict)
         
+        print(event)
+
         service = build('calendar', 'v3', credentials=creds)
 
         event = service.events().insert(calendarId='primary', body=event).execute()
-        print('Event created: %s' % (event.get('htmlLink')))
+        return 'Event created: %s' % (event.get('htmlLink'))
         # service = build('calendar', 'v3', credentials=creds)
 
         # # Call the Calendar API
@@ -99,6 +121,5 @@ def main():
     except HttpError as error:
         print('An error occurred: %s' % error)
 
-
 if __name__ == '__main__':
-    main()
+    createEvent()
