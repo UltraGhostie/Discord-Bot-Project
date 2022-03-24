@@ -1,5 +1,5 @@
+from inputhandler import event
 import discord
-import createEvent
 import os
 import bottoken
 
@@ -16,23 +16,27 @@ async def on_message(message):
     input = message.content.lower()
     if message.author == client.user:
         return
+
+    if input.startswith(callsign) == False:
+        return
     
-    if input.startswith(callsign + 'exit'):
-        await send(message, 'Exiting')
-        os._exit(0)
-
-    if input.startswith(callsign + 'event'):
-        await send(message, 'Creating calendar event')
-        await send(message, createEvent.createEvent())
-
-    if input.startswith(callsign + 'help'):
-        inputarray = input.split(' ')
-        if len(inputarray) == 1:
-            await send(message, '1')
-            return
-        match inputarray[1]:
-            case _:
-                await send(message, 'success')
+    input = input.replace(callsign, '')
+    inputarray = input.split(' ')
+    match inputarray[0]:
+        case 'exit':
+            await send(message, 'Exiting')
+            os._exit(0)
+        case 'event':
+            await send(message, 'Creating calendar event')
+            await send(message, event(input))
+        case 'help':
+            if len(inputarray) == 1:
+                await send(message, '1')
+                return
+            match inputarray[1]:
+                case _:
+                    await send(message, 'success')
+        
 
 async def send(message, response):
     await message.channel.send(response)

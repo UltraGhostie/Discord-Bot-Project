@@ -28,7 +28,7 @@ except ImportError:
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
-def createEvent(summary = 'Event', location = 'location', description = 'description', startTime = sometimeahead.main(), endTime = sometimeahead.main(2), attendees = 'null', reminders = '30'):
+def createEvent(summary = 'Event', location = 'location', description = 'description', startTime = 1, endTime = -1, attendees = 'null', reminders = '30'):
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
     """
@@ -36,6 +36,8 @@ def createEvent(summary = 'Event', location = 'location', description = 'descrip
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
+    if endTime == -1:
+        endTime = startTime + 1
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     # If there are no (valid) credentials available, let the user log in.
@@ -57,11 +59,11 @@ def createEvent(summary = 'Event', location = 'location', description = 'descrip
             'location': location,
             'description': description,
             'start': {
-                'dateTime': startTime,
+                'dateTime': sometimeahead.main(startTime),
                 'timeZone': 'Europe/Stockholm',
             },
             'end': {
-                'dateTime': endTime,
+                'dateTime': sometimeahead.main(endTime),
                 'timeZone': 'Europe/Stockholm',
             },
             'attendees': [],
