@@ -28,7 +28,8 @@ except ImportError:
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
-def createEvent(summary = 'Event', location = 'location', description = 'description', startTime = 1, endTime = -1, attendees = 'null', reminders = '30'):
+
+def createEvent(summary='Event', location='location', description='description', startTime=1, endTime=-1, attendees='null', reminders='30'):
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
     """
@@ -37,7 +38,7 @@ def createEvent(summary = 'Event', location = 'location', description = 'descrip
     # created automatically when the authorization flow completes for the first
     # time.
     if endTime == -1:
-        endTime = startTime + 1
+        endTime = int(startTime) + 1
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     # If there are no (valid) credentials available, let the user log in.
@@ -94,7 +95,7 @@ def createEvent(summary = 'Event', location = 'location', description = 'descrip
                 }
                 overridemetadict['overrides'].append(overridedict)
             event['reminders'].update(overridemetadict)
-        
+
         print(event)
 
         service = build('calendar', 'v3', credentials=creds)
@@ -122,6 +123,7 @@ def createEvent(summary = 'Event', location = 'location', description = 'descrip
 
     except HttpError as error:
         print('An error occurred: %s' % error)
+
 
 if __name__ == '__main__':
     createEvent()
