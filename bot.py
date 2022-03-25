@@ -5,11 +5,13 @@ import bottoken
 
 client = discord.Client()
 
-callsign = '%'
+callsign = ':'
+
 
 @client.event
 async def on_ready():
     print('Logged in as {0.user}'.format(client))
+
 
 @client.event
 async def on_message(message):
@@ -19,14 +21,14 @@ async def on_message(message):
 
     if input.startswith(callsign) == False:
         return
-    
+
     input = input.replace(callsign, '')
     inputarray = input.split(' ')
     match inputarray[0]:
         case 'exit':
             await send(message, 'Exiting')
             os._exit(0)
-        case 'event':
+        case '(':
             await send(message, 'Creating calendar event')
             await send(message, event(input))
         case 'help':
@@ -36,7 +38,7 @@ async def on_message(message):
             match inputarray[1]:
                 case _:
                     await send(message, 'success')
-        
+
 
 async def send(message, response):
     await message.channel.send(response)
