@@ -5,7 +5,7 @@ import bottoken
 
 client = discord.Client()
 
-callsign = ':'
+callsign = '%'
 
 
 @client.event
@@ -28,7 +28,7 @@ async def on_message(message):
         case 'exit':
             await send(message, 'Exiting')
             os._exit(0)
-        case '(':
+        case 'event':
             await send(message, 'Creating calendar event')
             await send(message, event(input))
         case 'help':
